@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -10,5 +10,16 @@
         android:id="@+id/rv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <com.example.stickheadersortrecyclerview.widget.LetterSlideBar
+        android:id="@+id/slideBar"
+        android:layout_width="100dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        app:chooseTextColor="@android:color/white"
+        app:textColor="#969696"
+        app:backgroundColor="#bef9b81b"
+        app:textSize="10sp"
+        app:hintTextSize="32sp"
+        app:radius="20dp"
+        app:circleRadius="24dp"/>
+</FrameLayout>
