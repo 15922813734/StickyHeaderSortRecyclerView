@@ -1,0 +1,65 @@
+<resources>
+    <string name="app_name">StickHeaderSortRecyclerView</string>
+    <string-array name="personname">
+        <item>Alberink</item>
+        <item>Paige</item>
+        <item>McAdams</item>
+        <item>Wahner</item>
+        <item>Appleby</item>
+        <item>Giffard</item>
+        <item>Sampson</item>
+        <item>Coy</item>
+        <item>Appleby</item>
+        <item>Dennel</item>
+        <item>Isaacson</item>
+        <item>Walther</item>
+        <item>Derricks</item>
+        <item>Collins</item>
+        <item>Franke</item>
+        <item>Gaertner</item>
+        <item>Sasaki</item>
+        <item>Stieber</item>
+        <item>Cobb</item>
+        <item>Maguire</item>
+        <item>Paris</item>
+        <item>Constable</item>
+        <item>Kato</item>
+        <item>Haas</item>
+        <item>Hamilton</item>
+        <item>Doyle</item>
+        <item>Ainsworth</item>
+        <item>Jerome</item>
+        <item>Wolff</item>
+        <item>Kiefer</item>
+        <item>Schuler</item>
+        <item>York</item>
+        <item>Gilbert</item>
+        <item>Holzer</item>
+        <item>Green</item>
+        <item>Shelton</item>
+        <item>Burns</item>
+        <item>Schuchard</item>
+        <item>Pawlitzki</item>
+        <item>Gott</item>
+        <item>Armstrong</item>
+        <item>Perry</item>
+        <item>Houk</item>
+        <item>Paulis</item>
+        <item>Ryer</item>
+        <item>Gallagher</item>
+        <item>Weeber</item>
+        <item>Van Tonder</item>
+        <item>Jacobson</item>
+        <item>Keil</item>
+        <item>Neville</item>
+        <item>Eliot</item>
+        <item>Ferguson</item>
+        <item>Devin</item>
+        <item>Feldt</item>
+        <item>Waller</item>
+        <item>Rosa</item>
+        <item>Ricci</item>
+        <item>Holt</item>
+        <item>Vergoossen</item>
+    </string-array>
+</resources>

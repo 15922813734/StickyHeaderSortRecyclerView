@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+<ImageView
+    android:id="@+id/iv"
+    android:layout_centerVertical="true"
+    android:layout_width="65dp"
+    android:layout_height="65dp"
+    tools:src="@drawable/pic_01"/>
+
+    <TextView
+        android:id="@+id/tv"
+        android:gravity="center_vertical"
+        android:layout_marginLeft="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="65dp"
+        tools:text="Alex Appleby"/>
+</LinearLayout>
