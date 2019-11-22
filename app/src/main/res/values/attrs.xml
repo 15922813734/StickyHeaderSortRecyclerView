@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="waveSideBar">
+    <declare-styleable name="letterSlideBar">
         <attr name="textColor" format="color|reference"/>
-        <attr name="backgroundColor" format="color|reference"/>
         <attr name="chooseTextColor" format="color|reference"/>
         <attr name="textSize" format="dimension"/>
         <attr name="hintTextSize" format="dimension"/>
-        <attr name="radius" format="dimension"/>
-        <attr name="circleRadius" format="dimension"/>
+        <attr name="topPadding" format="dimension"/>
     </declare-styleable>
 </resources>

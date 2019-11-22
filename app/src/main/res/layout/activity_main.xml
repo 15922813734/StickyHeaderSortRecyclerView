@@ -17,9 +17,6 @@
         android:layout_gravity="end"
         app:chooseTextColor="@android:color/white"
         app:textColor="#969696"
-        app:backgroundColor="#bef9b81b"
         app:textSize="10sp"
-        app:hintTextSize="32sp"
-        app:radius="20dp"
-        app:circleRadius="24dp"/>
+        app:hintTextSize="32sp"/>
 </FrameLayout>
