@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.util.TypedValue;
 import android.view.View;
 
@@ -21,25 +22,28 @@ import java.util.List;
  */
 
 public class TitleItemDecoration extends RecyclerView.ItemDecoration {
-    private static final String TAG = "TitleItemDecoration";
+    private final String TAG = "TitleItemDecoration";
     private List<ItemBean> mData;
     private Paint mPaint;
     private Rect mBounds;
+    private Context mContext;
 
     private int mTitleHeight;
-    private static int TITLE_BG_COLOR = Color.parseColor("#FFDFDFDF");
-    private static int TITLE_TEXT_COLOR = Color.parseColor("#FF000000");
-    private static int mTitleTextSize;
+    private final int TITLE_BG_COLOR = Color.parseColor("#FFFFFFFF");
+    private final int TITLE_TEXT_COLOR = Color.parseColor("#FF333333");
+    private final int mTitleTextSize;
 
 
     public TitleItemDecoration(Context context) {
         super();
+        mContext = context;
         mData = new ArrayList<>();
         mPaint = new Paint();
         mBounds = new Rect();
-        mTitleHeight = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 30, context.getResources().getDisplayMetrics());
-        mTitleTextSize = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 16, context.getResources().getDisplayMetrics());
+        mTitleHeight = value2px(TypedValue.COMPLEX_UNIT_DIP, 44);
+        mTitleTextSize = value2px(TypedValue.COMPLEX_UNIT_SP, 16);
         mPaint.setTextSize(mTitleTextSize);
+        mPaint.setTypeface(Typeface.DEFAULT_BOLD);
         mPaint.setAntiAlias(true);
     }
 
@@ -74,7 +78,9 @@ public class TitleItemDecoration extends RecyclerView.ItemDecoration {
 
     /**
      * 绘制Title区域背景和文字的方法
-     *最先调用，绘制最下层的title
+     * 最先调用，绘制最下层的title
+     * title文字距下5dp,距左20dp
+     *
      * @param c
      * @param left
      * @param right
@@ -88,13 +94,14 @@ public class TitleItemDecoration extends RecyclerView.ItemDecoration {
         mPaint.setColor(TITLE_TEXT_COLOR);
 
         mPaint.getTextBounds(mData.get(position).getLetters(), 0, mData.get(position).getLetters().length(), mBounds);
-        c.drawText(mData.get(position).getLetters(), 
-                child.getPaddingLeft(), 
-                child.getTop() - params.topMargin - (mTitleHeight / 2 - mBounds.height() / 2), mPaint);
+        c.drawText(mData.get(position).getLetters(),
+                child.getPaddingLeft() + value2px(TypedValue.COMPLEX_UNIT_DIP, 20),
+                child.getTop() - params.topMargin - value2px(TypedValue.COMPLEX_UNIT_DIP, 5), mPaint);
     }
 
     /**
      * 最后调用，绘制最上层的title,也就是绘制的吸附在顶部的头
+     *
      * @param c
      * @param parent
      * @param state
@@ -118,26 +125,18 @@ public class TitleItemDecoration extends RecyclerView.ItemDecoration {
                      * 下边的索引把上边的索引顶上去的效果
                      */
                     c.translate(0, child.getHeight() + child.getTop() - mTitleHeight);
-
-                    /**
-                     * 头部折叠起来的视效（下边的索引慢慢遮住上边的索引）
-                     */
-                    /*c.clipRect(parent.getPaddingLeft(),
-                            parent.getPaddingTop(),
-                            parent.getRight() - parent.getPaddingRight(),
-                            parent.getPaddingTop() + child.getHeight() + child.getTop());*/
                 }
             }
         }
         mPaint.setColor(TITLE_BG_COLOR);
-        c.drawRect(parent.getPaddingLeft(), 
-                parent.getPaddingTop(), 
-                parent.getRight() - parent.getPaddingRight(), 
+        c.drawRect(parent.getPaddingLeft(),
+                parent.getPaddingTop(),
+                parent.getRight() - parent.getPaddingRight(),
                 parent.getPaddingTop() + mTitleHeight, mPaint);
         mPaint.setColor(TITLE_TEXT_COLOR);
         mPaint.getTextBounds(tag, 0, tag.length(), mBounds);
-        c.drawText(tag, child.getPaddingLeft(),
-                parent.getPaddingTop() + mTitleHeight - (mTitleHeight / 2 - mBounds.height() / 2),
+        c.drawText(tag, child.getPaddingLeft()+ value2px(TypedValue.COMPLEX_UNIT_DIP, 20),
+                child.getTop() - value2px(TypedValue.COMPLEX_UNIT_DIP, 5),
                 mPaint);
         if (flag)
             c.restore();//恢复画布到之前保存的状态
@@ -153,7 +152,7 @@ public class TitleItemDecoration extends RecyclerView.ItemDecoration {
             if (position == 0) {
                 outRect.set(0, mTitleHeight, 0, 0);
             } else {
-                if (null != mData.get(position).getLetters() && 
+                if (null != mData.get(position).getLetters() &&
                         !mData.get(position).getLetters().equals(mData.get(position - 1).getLetters())) {
                     //字母不为空，并且不等于前一个，绘制title
                     outRect.set(0, mTitleHeight, 0, 0);
@@ -164,4 +163,7 @@ public class TitleItemDecoration extends RecyclerView.ItemDecoration {
         }
     }
 
+    private int value2px(int type, int dp) {
+        return (int) TypedValue.applyDimension(type, dp, mContext.getResources().getDisplayMetrics());
+    }
 }

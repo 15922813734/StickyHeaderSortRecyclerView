@@ -47,7 +47,6 @@ public class MainActivity extends BaseActivity {
         mDecoration = new TitleItemDecoration(this);
         //如果add两个，那么按照先后顺序，依次渲染。
         mRv.addItemDecoration(mDecoration);
-        mRv.addItemDecoration(new DividerItemDecoration(mActivity, DividerItemDecoration.VERTICAL));
         //设置右侧SideBar触摸监听
         mSlideBar.setOnTouchLetterChangeListener(new LetterSlideBar.OnTouchLetterChangeListener() {
             @Override

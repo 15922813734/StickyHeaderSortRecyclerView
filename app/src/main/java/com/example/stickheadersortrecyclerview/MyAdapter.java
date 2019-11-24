@@ -16,6 +16,7 @@ import com.luck.library.utils.LogUtils;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Author: 李桐桐
@@ -25,7 +26,6 @@ import java.util.List;
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
     private List<ItemBean> mDataList;
-    private String mCurrentLetters;
 
     public MyAdapter() {
         mDataList = new ArrayList<>();
@@ -40,11 +40,19 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder vh, int position) {
         vh.iv.setImageResource(mDataList.get(position).getPicRsId());
-        vh.tv.setText(mDataList.get(position).getName());
-        vh.itemView.setOnClickListener(new View.OnClickListener() {
+        vh.tvName.setText(mDataList.get(position).getName());
+
+        vh.tvNumber.setText(mDataList.get(position).getName() + position);
+        if(position + 1 < mDataList.size() && mDataList.get(position).getLetters().equals(mDataList.get(position + 1).getLetters())) {
+            vh.line.setVisibility(View.VISIBLE);
+        } else {
+            vh.line.setVisibility(View.GONE);
+        }
+        vh.tvCorrect.setText(String.format(Locale.CHINA, "批改(%d)", position + 1));
+        vh.tvCorrect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mListener != null) {
+                if (mListener != null) {
                     mListener.onClick(position, mDataList.get(position).getName());
                 }
             }
@@ -57,7 +65,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     }
 
     public void addData(List<ItemBean> datas) {
-        mCurrentLetters = datas.get(0).getLetters();
         mDataList.addAll(datas);
         notifyDataSetChanged();
     }
@@ -81,7 +88,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
      *
      * @param firstVisiblePosition
      * @param lastVisiblePosition
-     * @param isFingerSlideUp 手指上滑，界面下滑
+     * @param isFingerSlideUp      手指上滑，界面下滑
      * @return
      */
     public String getCurrentLetter(int firstVisiblePosition, int lastVisiblePosition, boolean isFingerSlideUp) {
@@ -89,13 +96,14 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                 || lastVisiblePosition < 0 || lastVisiblePosition >= mDataList.size()) {
             return "";
         }
-        if(isFingerSlideUp) {
+        if (isFingerSlideUp) {
             if (firstVisiblePosition == 0) return mDataList.get(0).getLetters();
             if (mDataList.get(firstVisiblePosition).getLetters().equals(mDataList.get(firstVisiblePosition - 1).getLetters())) {
                 return "";
             }
         } else {
-            if(firstVisiblePosition + 1 >= mDataList.size()) return mDataList.get(firstVisiblePosition).getLetters();
+            if (firstVisiblePosition + 1 >= mDataList.size())
+                return mDataList.get(firstVisiblePosition).getLetters();
             if (mDataList.get(firstVisiblePosition).getLetters().equals(mDataList.get(firstVisiblePosition + 1).getLetters())) {
                 return "";
             }
@@ -106,6 +114,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     public interface onItemViewClickListener {
         void onClick(int position, String s);
     }
+
     private onItemViewClickListener mListener;
 
     public void setOnItemViewClickListener(onItemViewClickListener mListener) {
@@ -115,11 +124,17 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     public static class MyViewHolder extends RecyclerView.ViewHolder {
 
         ImageView iv;
-        TextView tv;
+        TextView tvName;
+        TextView tvNumber;
+        TextView tvCorrect;
+        View line;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             iv = itemView.findViewById(R.id.iv);
-            tv = itemView.findViewById(R.id.tv);
+            tvName = itemView.findViewById(R.id.tvName);
+            tvNumber = itemView.findViewById(R.id.tvNumber);
+            tvCorrect = itemView.findViewById(R.id.tvCorrect);
+            line = itemView.findViewById(R.id.line);
         }
     }
 }

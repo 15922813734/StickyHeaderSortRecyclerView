@@ -16,7 +16,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="end"
         app:chooseTextColor="@android:color/white"
-        app:textColor="#969696"
-        app:textSize="10sp"
+        app:textColor="#1FB895"
+        app:textSize="12sp"
         app:hintTextSize="32sp"/>
 </FrameLayout>

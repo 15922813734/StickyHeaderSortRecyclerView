@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat;
 
 import com.example.stickheadersortrecyclerview.R;
 import com.luck.library.utils.LogUtils;
+import com.luck.library.utils.UIUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -26,11 +27,12 @@ public class LetterSlideBar extends View {
 
     private final String TAG = "LetterSlideBar";
 
-    /**
-     * 默认字母顺序表
-     */
-    private final  String[] DEFAULT_INDEX_ITEMS = {"A", "B", "C", "D", "E", "F", "G", "H", "I",
+    //默认字母顺序表
+    private final String[] DEFAULT_INDEX_ITEMS = {"A", "B", "C", "D", "E", "F", "G", "H", "I",
             "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "#"};
+
+    //字母中线距右间距
+    private final int mLettersRightSpace = 8;
 
     private OnTouchLetterChangeListener mListener;
 
@@ -41,33 +43,31 @@ public class LetterSlideBar extends View {
     private int mChoosePosition;
 
     private int mOldPosition;
-
     private int mNewPosition;
 
     // 字母列表画笔
     private Paint mLettersPaint = new Paint();
 
     // 提示字母画笔
-    private Paint mTextPaint = new Paint();
+    private Paint mHintTextPaint = new Paint();
+
     //View宽高
     private int mViewWidth;
     private int mViewHeight;
-
+    //自定义属性
     private int mTextSize;
     private int mHintTextSize;
     private int mTextColor;
     private int mTextColorChoose;
+    //字母高度
     private int mItemViewHeight;
-
-    //字母间距
+    //字母上下间距
     private int mVerticalPadding;
+    // 手指滑动的坐标，用于画提示文字框
+    private int mTouchY;
+    private int mTouchX;
 
-    // 手指滑动的Y点
-    private int mCenterY; //中心点Y
-
-    private int mCenterX;//中心点X
-
-    // 选中字体的坐标
+    // 选中字母的坐标，用于画字母列表
     private float mPointX, mPointY;
 
     //判断是否需要画选中字母
@@ -100,28 +100,35 @@ public class LetterSlideBar extends View {
             mHintTextSize = a.getDimensionPixelSize(R.styleable.letterSlideBar_hintTextSize, mHintTextSize);
             a.recycle();
         }
-        mTextPaint.setAntiAlias(true);
-        mTextPaint.setColor(mTextColorChoose);
-        mTextPaint.setStyle(Paint.Style.FILL);
-        mTextPaint.setTextSize(mHintTextSize);
-        mTextPaint.setTextAlign(Paint.Align.CENTER);
+        mHintTextPaint.setAntiAlias(true);
+        mHintTextPaint.setColor(mTextColorChoose);
+        mHintTextPaint.setStyle(Paint.Style.FILL);
+        mHintTextPaint.setTextSize(mHintTextSize);
+        mHintTextPaint.setTextAlign(Paint.Align.CENTER);
     }
 
+    /**
+     * 通过当前触摸Y坐标及每个字母高度获取当前点击的字母位置
+     *
+     * @param event
+     * @return
+     */
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
         final float y = event.getY();
         final float x = event.getX();
+        if(x < mViewWidth / 2) return false;
         mOldPosition = mChoosePosition;
         mNewPosition = (int) ((y - mVerticalPadding)) / mItemViewHeight;
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                mCenterX = (int) x;
-                mCenterY = (int) y;
+                mTouchX = (int) x;
+                mTouchY = (int) y;
                 operatorType = 1;
                 break;
             case MotionEvent.ACTION_MOVE:
-                mCenterY = (int) y;
-                mCenterX = (int) x;
+                mTouchY = (int) y;
+                mTouchX = (int) x;
                 if (mOldPosition != mNewPosition) {
                     if (mNewPosition >= 0 && mNewPosition < mLettersList.size()) {
                         mChoosePosition = mNewPosition;
@@ -143,14 +150,20 @@ public class LetterSlideBar extends View {
         return true;
     }
 
+    /**
+     * 获取组件宽高、上下间距、字母绘制横坐标
+     *
+     * @param widthMeasureSpec
+     * @param heightMeasureSpec
+     */
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         mViewHeight = MeasureSpec.getSize(heightMeasureSpec);
         mViewWidth = getMeasuredWidth();
         mItemViewHeight = (int) (1.6 * mTextSize);
-        mPointX = mViewWidth - 1.6f * mTextSize;
-        mVerticalPadding = (mViewHeight - mItemViewHeight * mLettersList.size())/2;
+        mPointX = mViewWidth - UIUtils.dp2px(mLettersRightSpace);
+        mVerticalPadding = (mViewHeight - mItemViewHeight * mLettersList.size()) / 2;
     }
 
     @Override
@@ -159,14 +172,14 @@ public class LetterSlideBar extends View {
         //绘制字母列表
         drawLetters(canvas);
         //绘制选中的字体
-        if(mCenterX < 210) {
-            mCenterX = 210;
+        if (mTouchX < 210) {
+            mTouchX = 210;
         }
         drawChooseText(canvas);
     }
 
     /**
-     * 绘制字母列表
+     * 绘制字母列表，并将选中的字母背景画个圆
      *
      * @param canvas
      */
@@ -178,12 +191,12 @@ public class LetterSlideBar extends View {
             mLettersPaint.setTextSize(mTextSize);
             mLettersPaint.setTextAlign(Paint.Align.CENTER);
             Paint.FontMetrics fontMetrics = mLettersPaint.getFontMetrics();
-            LogUtils.d(fontMetrics.bottom, fontMetrics.top, fontMetrics.leading);
             float baseline = Math.abs(-fontMetrics.bottom - fontMetrics.top);
             float pointY = mItemViewHeight * i + mVerticalPadding;
+
             if (i == mChoosePosition) {
                 mPointY = pointY;
-                canvas.drawCircle(mPointX, mPointY - baseline/2, mTextSize, mLettersPaint);
+                canvas.drawCircle(mPointX, mPointY - baseline / 2, UIUtils.dp2px(mLettersRightSpace - 1), mLettersPaint);
                 mLettersPaint.setColor(Color.parseColor("#FFFFFF"));
                 canvas.drawText(mLettersList.get(i), mPointX, pointY, mLettersPaint);
             } else {
@@ -194,40 +207,45 @@ public class LetterSlideBar extends View {
 
 
     /**
-     * 绘制选中的字母
+     * 绘制选中的字母时显示的绿色方框
      *
      * @param canvas
      */
     private void drawChooseText(Canvas canvas) {
-        if(operatorType == 0 || mChoosePosition >= mLettersList.size() || mChoosePosition < 0  ||
-        mCenterY < mVerticalPadding || mCenterY > mViewHeight - mVerticalPadding){
+        if (operatorType == 0 || mChoosePosition >= mLettersList.size() || mChoosePosition < 0 ||
+                mTouchY < mVerticalPadding || mTouchY > mViewHeight - mVerticalPadding) {
             return;
         }
         int popTextSize = 100;
-        float x = mCenterX - 160;
-        float y = mCenterY ;
-        mTextPaint.reset();
-        mTextPaint.setStyle(Paint.Style.FILL);
-        mTextPaint.setColor(Color.parseColor("#1BB771"));
+        float x = mTouchX - 160;
+        float y = mTouchY;
+        mHintTextPaint.reset();
+        mHintTextPaint.setStyle(Paint.Style.FILL);
+        mHintTextPaint.setColor(Color.parseColor("#1BB771"));
         Path path = new Path();
-        RectF roundRectT = new RectF(x-50, y - 160, x + 100, y-10);
+        RectF roundRectT = new RectF(x - 50, y - 160, x + 100, y - 10);
         // 左上角、右上角、右下角、左下角的x,y
         path.addRoundRect(roundRectT, new float[]{50, 50, 50, 50, 0, 0, 50, 50}, Path.Direction.CCW);
-        canvas.drawPath(path, mTextPaint);
-        mTextPaint.reset();
-        mTextPaint.setColor(Color.WHITE);
-        mTextPaint.setTextSize(popTextSize);
+        canvas.drawPath(path, mHintTextPaint);
+        mHintTextPaint.reset();
+        mHintTextPaint.setColor(Color.WHITE);
+        mHintTextPaint.setTextSize(popTextSize);
         // 绘制提示字符
         String target = mLettersList.get(mChoosePosition);
-        canvas.drawText(target, x, y-50, mTextPaint);
+        canvas.drawText(target, x, y - 50, mHintTextPaint);
     }
 
+    /**
+     * 设置显示选中状态的字母
+     * @param letter
+     */
     public void setShowLetter(String letter) {
-        if(mLettersList != null && mLettersList.contains(letter)) {
+        if (mLettersList != null && mLettersList.contains(letter)) {
             mChoosePosition = mLettersList.indexOf(letter);
         }
         invalidate();
     }
+
     public void setOnTouchLetterChangeListener(OnTouchLetterChangeListener listener) {
         this.mListener = listener;
     }

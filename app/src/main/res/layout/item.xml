@@ -1,21 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="horizontal"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
-<ImageView
-    android:id="@+id/iv"
-    android:layout_centerVertical="true"
-    android:layout_width="65dp"
-    android:layout_height="65dp"
-    tools:src="@drawable/pic_01"/>
+    android:layout_width="match_parent"
+    android:layout_height="71dp">
+
+    <ImageView
+        android:id="@+id/iv"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@drawable/pic_01" />
+
 
     <TextView
-        android:id="@+id/tv"
-        android:gravity="center_vertical"
-        android:layout_marginLeft="10dp"
+        android:id="@+id/tvName"
         android:layout_width="wrap_content"
-        android:layout_height="65dp"
-        tools:text="Alex Appleby"/>
-</LinearLayout>
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:textColor="#333333"
+        android:textSize="16sp"
+        app:layout_constraintLeft_toRightOf="@id/iv"
+        app:layout_constraintTop_toTopOf="@id/iv"
+        tools:text="Alex Appleby" />
+
+    <TextView
+        android:id="@+id/tvNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:textColor="#666666"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@id/iv"
+        app:layout_constraintLeft_toRightOf="@id/iv"
+        tools:text="Alex Appleby" />
+
+    <TextView
+        android:id="@+id/tvCorrect"
+        android:layout_width="80dp"
+        android:layout_height="30dp"
+        android:layout_marginRight="36dp"
+        android:background="@drawable/bg_correct"
+        android:gravity="center"
+        android:text="批改(%d)"
+        android:textColor="#666666"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="76dp"
+        android:layout_marginRight="16dp"
+        android:background="#E3E3E3"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>
