@@ -14,6 +14,7 @@ import android.view.View;
 import androidx.core.content.ContextCompat;
 
 import com.example.stickheadersortrecyclerview.R;
+import com.luck.library.utils.LogUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,7 +24,7 @@ import java.util.List;
  */
 public class LetterSlideBar extends View {
 
-    private static final String TAG = "LetterSlideBar";
+    private final String TAG = "LetterSlideBar";
 
     /**
      * 默认字母顺序表
@@ -57,11 +58,11 @@ public class LetterSlideBar extends View {
     private int mTextColor;
     private int mTextColorChoose;
     private int mItemViewHeight;
-    //字母间距
-//    private int mPadding;
-    private int mTopPadding;
 
-    // 手指滑动的Y点作为中心点
+    //字母间距
+    private int mVerticalPadding;
+
+    // 手指滑动的Y点
     private int mCenterY; //中心点Y
 
     private int mCenterX;//中心点X
@@ -91,18 +92,14 @@ public class LetterSlideBar extends View {
         mTextColorChoose = ContextCompat.getColor(context, android.R.color.white);
         mTextSize = context.getResources().getDimensionPixelSize(R.dimen.textSize);
         mHintTextSize = context.getResources().getDimensionPixelSize(R.dimen.hintTextSize);
-//        mPadding = context.getResources().getDimensionPixelSize(R.dimen.padding);
-        mTopPadding = context.getResources().getDimensionPixelSize(R.dimen.topPadding);
         if (attrs != null) {
             TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.letterSlideBar);
             mTextColor = a.getColor(R.styleable.letterSlideBar_textColor, mTextColor);
             mTextColorChoose = a.getColor(R.styleable.letterSlideBar_chooseTextColor, mTextColorChoose);
             mTextSize = a.getDimensionPixelSize(R.styleable.letterSlideBar_textSize, mTextSize);
             mHintTextSize = a.getDimensionPixelSize(R.styleable.letterSlideBar_hintTextSize, mHintTextSize);
-            mTopPadding = a.getDimensionPixelSize(R.styleable.letterSlideBar_topPadding, mTopPadding);
             a.recycle();
         }
-
         mTextPaint.setAntiAlias(true);
         mTextPaint.setColor(mTextColorChoose);
         mTextPaint.setStyle(Paint.Style.FILL);
@@ -115,7 +112,7 @@ public class LetterSlideBar extends View {
         final float y = event.getY();
         final float x = event.getX();
         mOldPosition = mChoosePosition;
-        mNewPosition = (int) ((y - mTopPadding)) / mItemViewHeight;//(int) (y / mViewHeight * mLettersList.size());
+        mNewPosition = (int) ((y - mVerticalPadding)) / mItemViewHeight;
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 mCenterX = (int) x;
@@ -151,8 +148,9 @@ public class LetterSlideBar extends View {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         mViewHeight = MeasureSpec.getSize(heightMeasureSpec);
         mViewWidth = getMeasuredWidth();
-        mItemViewHeight = (mViewHeight - mTopPadding * 2) / mLettersList.size();
+        mItemViewHeight = (int) (1.6 * mTextSize);
         mPointX = mViewWidth - 1.6f * mTextSize;
+        mVerticalPadding = (mViewHeight - mItemViewHeight * mLettersList.size())/2;
     }
 
     @Override
@@ -165,7 +163,6 @@ public class LetterSlideBar extends View {
             mCenterX = 210;
         }
         drawChooseText(canvas);
-
     }
 
     /**
@@ -180,17 +177,14 @@ public class LetterSlideBar extends View {
             mLettersPaint.setAntiAlias(true);
             mLettersPaint.setTextSize(mTextSize);
             mLettersPaint.setTextAlign(Paint.Align.CENTER);
-
             Paint.FontMetrics fontMetrics = mLettersPaint.getFontMetrics();
+            LogUtils.d(fontMetrics.bottom, fontMetrics.top, fontMetrics.leading);
             float baseline = Math.abs(-fontMetrics.bottom - fontMetrics.top);
-
-            float pointY = mItemViewHeight * i + baseline / 2 + mTopPadding;
-
+            float pointY = mItemViewHeight * i + mVerticalPadding;
             if (i == mChoosePosition) {
                 mPointY = pointY;
-                canvas.drawCircle(mPointX, mPointY - baseline /2 ,mTextSize * 1.6f, mLettersPaint);
+                canvas.drawCircle(mPointX, mPointY - baseline/2, mTextSize, mLettersPaint);
                 mLettersPaint.setColor(Color.parseColor("#FFFFFF"));
-//                 //绘制A-Z的字母
                 canvas.drawText(mLettersList.get(i), mPointX, pointY, mLettersPaint);
             } else {
                 canvas.drawText(mLettersList.get(i), mPointX, pointY, mLettersPaint);
@@ -205,14 +199,13 @@ public class LetterSlideBar extends View {
      * @param canvas
      */
     private void drawChooseText(Canvas canvas) {
-
-        if(operatorType == 0 || mChoosePosition >= mLettersList.size() || mChoosePosition < 0){
+        if(operatorType == 0 || mChoosePosition >= mLettersList.size() || mChoosePosition < 0  ||
+        mCenterY < mVerticalPadding || mCenterY > mViewHeight - mVerticalPadding){
             return;
         }
         int popTextSize = 100;
         float x = mCenterX - 160;
-        float y = mCenterY ;//mCenterY + baseline / 2;
-
+        float y = mCenterY ;
         mTextPaint.reset();
         mTextPaint.setStyle(Paint.Style.FILL);
         mTextPaint.setColor(Color.parseColor("#1BB771"));
@@ -225,13 +218,8 @@ public class LetterSlideBar extends View {
         mTextPaint.setColor(Color.WHITE);
         mTextPaint.setTextSize(popTextSize);
         // 绘制提示字符
-//            if (mRatio >= 0.9f) {
         String target = mLettersList.get(mChoosePosition);
-        Paint.FontMetrics fontMetrics = mTextPaint.getFontMetrics();
-        float baseline = Math.abs(-fontMetrics.bottom - fontMetrics.top);
-        canvas.drawText(target, x, y-50, mTextPaint);// TODO 50需要一个依据
-//            }
-
+        canvas.drawText(target, x, y-50, mTextPaint);
     }
 
     public void setShowLetter(String letter) {

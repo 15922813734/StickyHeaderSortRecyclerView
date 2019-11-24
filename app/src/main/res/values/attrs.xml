@@ -5,6 +5,5 @@
         <attr name="chooseTextColor" format="color|reference"/>
         <attr name="textSize" format="dimension"/>
         <attr name="hintTextSize" format="dimension"/>
-        <attr name="topPadding" format="dimension"/>
     </declare-styleable>
 </resources>
