@@ -59,12 +59,6 @@ public class MainActivity extends BaseActivity {
             }
         });
         setData();
-//        mDecoration.setOnTitleLettersChangedListener(new TitleItemDecoration.onTitleLettersChangedListener() {
-//            @Override
-//            public void onTitleLettersChanged(String s) {
-//                mSlideBar.setShowLetter(s);
-//            }
-//        });
         mAdapter.setOnItemViewClickListener(new MyAdapter.onItemViewClickListener() {
             @Override
             public void onClick(int position, String s) {
@@ -84,6 +78,7 @@ public class MainActivity extends BaseActivity {
             }
         });
     }
+
 
     @Override
     protected int getPageLayoutId() {

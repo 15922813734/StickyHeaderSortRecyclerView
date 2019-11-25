@@ -135,8 +135,8 @@ public class TitleItemDecoration extends RecyclerView.ItemDecoration {
                 parent.getPaddingTop() + mTitleHeight, mPaint);
         mPaint.setColor(TITLE_TEXT_COLOR);
         mPaint.getTextBounds(tag, 0, tag.length(), mBounds);
-        c.drawText(tag, child.getPaddingLeft()+ value2px(TypedValue.COMPLEX_UNIT_DIP, 20),
-                child.getTop() - value2px(TypedValue.COMPLEX_UNIT_DIP, 5),
+        c.drawText(tag, child.getPaddingLeft() + value2px(TypedValue.COMPLEX_UNIT_DIP, 20),
+                parent.getPaddingTop() + mTitleHeight - value2px(TypedValue.COMPLEX_UNIT_DIP, 5),//(mTitleHeight / 2 - mBounds.height() / 2),
                 mPaint);
         if (flag)
             c.restore();//恢复画布到之前保存的状态
