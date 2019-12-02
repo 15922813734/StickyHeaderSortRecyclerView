@@ -109,7 +109,7 @@ public class TitleItemDecoration extends RecyclerView.ItemDecoration {
     @Override
     public void onDrawOver(Canvas c, final RecyclerView parent, RecyclerView.State state) {
         int position = ((LinearLayoutManager) (parent.getLayoutManager())).findFirstVisibleItemPosition();
-        if (position == -1) return;//在搜索到没有的索引的时候position可能等于-1，所以在这里判断一下
+        if (position == -1) return;//position可能等于-1，所以在这里判断一下
         String tag = mData.get(position).getLetters();
         View child = parent.findViewHolderForLayoutPosition(position).itemView;
         //Canvas是否位移过的标志
@@ -117,13 +117,11 @@ public class TitleItemDecoration extends RecyclerView.ItemDecoration {
         if ((position + 1) < mData.size()) {
             //当前第一个可见的Item的字母索引，不等于其后一个item的字母索引，说明悬浮的View要切换了
             if (null != tag && !tag.equals(mData.get(position + 1).getLetters())) {
-                //当第一个可见的item在屏幕中剩下的高度小于title的高度时，开始悬浮Title的动画
+                //当第一个可见的item在屏幕中剩下的高度小于title的高度时，开始悬浮Title
                 if (child.getHeight() + child.getTop() < mTitleHeight) {
                     c.save();
                     flag = true;
-                    /**
-                     * 下边的索引把上边的索引顶上去的效果
-                     */
+                    //下边的索引把上边的索引顶上去的效果
                     c.translate(0, child.getHeight() + child.getTop() - mTitleHeight);
                 }
             }

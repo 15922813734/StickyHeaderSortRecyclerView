@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="letterSlideBar">
+    <declare-styleable name="LetterSlideBar">
         <attr name="textColor" format="color|reference"/>
         <attr name="chooseTextColor" format="color|reference"/>
         <attr name="textSize" format="dimension"/>
+        <attr name="isDisplayChosenToast" format="boolean"/>
         <attr name="hintTextSize" format="dimension"/>
     </declare-styleable>
 </resources>
